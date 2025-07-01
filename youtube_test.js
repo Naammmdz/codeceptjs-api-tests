@@ -2,6 +2,7 @@ Feature('YouTube Website');
 
 // Testing YouTube website endpoints that return HTML
 // These tests check if the website is accessible
+// Updated: CI/CD demo - this change will trigger automated tests
 
 Scenario('access YouTube homepage', ({ I }) => {
   I.sendGetRequest('/');
