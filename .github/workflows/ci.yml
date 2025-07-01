@@ -1,0 +1,115 @@
+name: CodeceptJS Tests CI/CD
+
+# Trigger the workflow on push to main branch and pull requests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  # Allow manual triggering of the workflow
+  workflow_dispatch:
+  # Run tests on a schedule (daily at 9 AM UTC)
+  schedule:
+    - cron: '0 9 * * *'
+
+jobs:
+  test:
+    name: Run CodeceptJS Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run YouTube API tests
+      run: npx codeceptjs run youtube_test.js --reporter spec
+      env:
+        NODE_TLS_REJECT_UNAUTHORIZED: 0
+    
+    - name: Run Star Wars API tests (if needed)
+      run: npx codeceptjs run star_wars_test.js --reporter spec
+      env:
+        NODE_TLS_REJECT_UNAUTHORIZED: 0
+      continue-on-error: true
+    
+    - name: Generate test report
+      run: npx codeceptjs run --reporter mochawesome
+      continue-on-error: true
+      env:
+        NODE_TLS_REJECT_UNAUTHORIZED: 0
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-node-${{ matrix.node-version }}
+        path: |
+          output/
+          mochawesome-report/
+        retention-days: 30
+    
+    - name: Upload test reports to GitHub Pages (if main branch)
+      if: github.ref == 'refs/heads/main' && matrix.node-version == '20.x'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./output
+        destination_dir: test-reports
+
+  # Health check job to verify external APIs
+  health-check:
+    name: External API Health Check
+    runs-on: ubuntu-latest
+    needs: test
+    if: always()
+    
+    steps:
+    - name: Check YouTube API Status
+      run: |
+        echo "Checking YouTube API availability..."
+        curl -f --connect-timeout 30 --max-time 60 https://www.youtube.com/ || echo "YouTube API check failed"
+    
+    - name: Check Star Wars API Status
+      run: |
+        echo "Checking Star Wars API availability..."
+        curl -f --connect-timeout 30 --max-time 60 https://swapi.dev/api/ || echo "SWAPI check failed"
+    
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "⚠️ External API health check failed"
+        echo "This might affect test reliability"
+
+  # Notification job
+  notify:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: [test, health-check]
+    if: always()
+    
+    steps:
+    - name: Test Summary
+      run: |
+        echo "## 🧪 Test Results Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **Test Job**: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Health Check**: ${{ needs.health-check.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Workflow**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [[ "${{ needs.test.result }}" == "success" ]]; then
+          echo "✅ All tests passed successfully!" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Some tests failed. Check the logs above." >> $GITHUB_STEP_SUMMARY
+        fi

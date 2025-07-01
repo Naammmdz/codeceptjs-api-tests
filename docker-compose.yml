@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  codeceptjs-tests:
+    build: .
+    container_name: codeceptjs-api-tests
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - NODE_ENV=test
+    volumes:
+      - ./output:/app/output
+      - ./test-results:/app/test-results
+    command: npm run test:ci
+    networks:
+      - test-network
+
+  # Service for running specific test suites
+  youtube-tests:
+    build: .
+    container_name: youtube-api-tests
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    volumes:
+      - ./output:/app/output
+    command: npm run test:youtube
+    networks:
+      - test-network
+
+  starwars-tests:
+    build: .
+    container_name: starwars-api-tests
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    volumes:
+      - ./output:/app/output
+    command: npm run test:starwars
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
