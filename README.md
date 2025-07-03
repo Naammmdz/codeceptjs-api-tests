@@ -5,7 +5,6 @@ CodeceptJS API testing examples for Star Wars API and YouTube with comprehensive
 ## 🚀 Features
 
 - YouTube website availability testing
-- Star Wars API testing
 - Automated CI/CD with GitHub Actions
 - Docker containerization
 - Test reporting and artifacts
@@ -32,9 +31,8 @@ npm install
 # Run all tests
 npm test
 
-# Run specific test suites
+# Run specific test suite
 npm run test:youtube
-npm run test:starwars
 
 # Run with verbose output
 npm run test:verbose
@@ -52,9 +50,8 @@ npm run test:ci
 # Build and run all tests
 docker-compose up codeceptjs-tests
 
-# Run specific test suites
+# Run specific test suite
 docker-compose up youtube-tests
-docker-compose up starwars-tests
 
 # Build Docker image manually
 docker build -t codeceptjs-tests .
@@ -71,7 +68,7 @@ The project includes a comprehensive GitHub Actions workflow (`.github/workflows
 - **Tests on**: Node.js 18.x and 20.x
 - **Includes**:
   - Dependency installation and caching
-  - YouTube and Star Wars API tests
+  - YouTube API tests
   - Test report generation
   - Artifact upload (test results retained for 30 days)
   - External API health checks

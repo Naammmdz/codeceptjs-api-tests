@@ -26,16 +26,6 @@ services:
     networks:
       - test-network
 
-  starwars-tests:
-    build: .
-    container_name: starwars-api-tests
-    environment:
-      - NODE_TLS_REJECT_UNAUTHORIZED=0
-    volumes:
-      - ./output:/app/output
-    command: npm run test:starwars
-    networks:
-      - test-network
 
 networks:
   test-network:
