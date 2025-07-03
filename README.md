@@ -1,14 +1,23 @@
 # 🧪 CodeceptJS API Testing Examples
 
-CodeceptJS API testing examples for Star Wars API and YouTube with comprehensive CI/CD pipeline.
+Comprehensive API testing suite with CodeceptJS covering multiple public APIs and full CI/CD pipeline.
 
 ## 🚀 Features
 
-- YouTube website availability testing
-- Automated CI/CD with GitHub Actions
-- Docker containerization
-- Test reporting and artifacts
-- Scheduled daily health checks
+- **Multiple API Testing**:
+  - YouTube website availability testing
+  - GitHub API (users, repositories, search, rate limits)
+  - JSONPlaceholder API (CRUD operations, posts, users, comments)
+  - REST Countries API (geographical data, search by various criteria)
+- **Advanced Testing Capabilities**:
+  - JSON Schema validation with Joi
+  - Error handling and edge case testing
+  - Rate limiting and network resilience
+- **CI/CD Pipeline**:
+  - Automated testing with GitHub Actions
+  - Docker containerization
+  - Test reporting and artifacts
+  - Scheduled daily health checks
 
 ## 📋 Prerequisites
 
@@ -31,8 +40,12 @@ npm install
 # Run all tests
 npm test
 
-# Run specific test suite
-npm run test:youtube
+# Run specific test suites
+npm run test:youtube        # YouTube website tests
+npm run test:github         # GitHub API tests
+npm run test:jsonplaceholder # JSONPlaceholder CRUD tests
+npm run test:countries      # REST Countries API tests
+npm run test:all-apis       # Run all API tests sequentially
 
 # Run with verbose output
 npm run test:verbose
@@ -50,8 +63,12 @@ npm run test:ci
 # Build and run all tests
 docker-compose up codeceptjs-tests
 
-# Run specific test suite
-docker-compose up youtube-tests
+# Run specific test suites
+docker-compose up youtube-tests        # YouTube website tests
+docker-compose up github-tests         # GitHub API tests
+docker-compose up jsonplaceholder-tests # JSONPlaceholder tests
+docker-compose up countries-tests      # REST Countries tests
+docker-compose up all-api-tests        # All APIs together
 
 # Build Docker image manually
 docker build -t codeceptjs-tests .

@@ -25,6 +25,50 @@ services:
     command: npm run test:youtube
     networks:
       - test-network
+  
+  github-tests:
+    build: .
+    container_name: github-api-tests
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    volumes:
+      - ./output:/app/output
+    command: npm run test:github
+    networks:
+      - test-network
+  
+  jsonplaceholder-tests:
+    build: .
+    container_name: jsonplaceholder-api-tests
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    volumes:
+      - ./output:/app/output
+    command: npm run test:jsonplaceholder
+    networks:
+      - test-network
+  
+  countries-tests:
+    build: .
+    container_name: countries-api-tests
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    volumes:
+      - ./output:/app/output
+    command: npm run test:countries
+    networks:
+      - test-network
+  
+  all-api-tests:
+    build: .
+    container_name: all-api-tests
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    volumes:
+      - ./output:/app/output
+    command: npm run test:all-apis
+    networks:
+      - test-network
 
 
 networks:
