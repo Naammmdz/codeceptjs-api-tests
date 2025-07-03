@@ -10,12 +10,10 @@
   "scripts": {
     "test": "codeceptjs run",
     "test:youtube": "codeceptjs run youtube_test.js",
-    "test:starwars": "codeceptjs run star_wars_test.js",
     "test:verbose": "codeceptjs run --verbose",
     "test:steps": "codeceptjs run --steps",
     "test:reporter": "codeceptjs run --reporter spec",
-    "test:ci": "codeceptjs run --reporter spec",
-    "test:all": "npm run test:youtube && npm run test:starwars"
+    "test:ci": "codeceptjs run --reporter spec"
   },
   "repository": {
     "type": "git",
