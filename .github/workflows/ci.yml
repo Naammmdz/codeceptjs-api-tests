@@ -32,13 +32,20 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm install
+      run: |
+        npm install
+        npm ls --depth=0
+    
+    - name: Create output directories
+      run: |
+        mkdir -p output
+        mkdir -p mochawesome-report
     
     - name: Run YouTube API tests
       run: npx codeceptjs run youtube_test.js --reporter spec
       env:
         NODE_TLS_REJECT_UNAUTHORIZED: 0
-    
+      continue-on-error: true
     
     - name: Generate test report
       run: npx codeceptjs run --reporter mochawesome
